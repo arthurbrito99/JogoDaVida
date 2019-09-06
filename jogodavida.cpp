@@ -19,6 +19,8 @@ void geraMatriz(){
 	while(arquivo){
 
 	}
+
+
 }
 
 void proximaGeracao(bool matriz[][22]){
@@ -72,13 +74,23 @@ int main(){
 //	bool matriz[80][22];
 
 	ifstream infile("coordVida.txt");
-	string str = "teste";
+	string line;
 
+int a, b;
+while (infile >> a >> b)
+{
+    // process pair (a,b)
+	cout << a;
+	cout << b;
+	cout << "\n";
+}
+
+/*  	getline(infile, line);
 	cout << line;
-/*	while (getline(infile, line)) {
-		getline(infile, line);
-	}
-*/
+	getline(infile, line);
+	cout << line; */
+
+
 	infile.close();
  
 	return 0;
