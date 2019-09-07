@@ -4,60 +4,29 @@
 
 using namespace std;
 
-void geraMatriz(){
+void geraMatriz(bool **matriz){
 
-	ifstream arquivo("coordVida.txt");
-	string str[255];
+	ifstream arqCoordenadas("coordVida.txt");
 
-	//arquivo.open("coordVida.txt");
-
-	if (!arquivo) {
+	if (!arqCoordenadas) {
     	cout << "Erro ao abrir o arquivo 'coordVida.txt'";
     	exit(1);
 	}
 
-	while(arquivo){
+	int x, y;
+	while (arqCoordenadas >> x >> y){
 
+		matriz[x][y] = true;
 	}
 
+	arqCoordenadas.close();
 
 }
 
-void proximaGeracao(bool matriz[][22]){
-
-	int vizinhosVivos;
-
-	for(int i = 0; i < 80; i++){
-		for(int j = 0; j < 22; j++){
-			
-			vizinhosVivos = 0;
-
-			for(int k = -1; k <= 1; k++){
-				for(int l = -1; l <= 1; l++){
-
-					if(((k != 0) && (l != 0)) && (matriz[i + k][j + l] == true)){
-						vizinhosVivos++;
-					}
-
-				}
-			}
-
-			if((matriz[i][j] == true) && (vizinhosVivos < 2))
-				matriz[i][j] = false;
-			else if((matriz[i][j] == true) && (vizinhosVivos < 3))
-				matriz[i][j] = false;
-			else if((matriz[i][j] == false) && (vizinhosVivos == 3))
-				matriz[i][j] = true;
-			
-
-		}
-	}
-}
-
-void mostra(bool matriz[][22]){
+void mostra(bool **matriz){
 	
-	for(int i = 0; i < 80; i++){
-		for(int j = 0; j < 22; j++){
+	for(int i = 0; i < 22; i++){
+		for(int j = 0; j < 80; j++){
 			
 			if(matriz[i][j] == true)
 				cout << "*";
@@ -69,29 +38,72 @@ void mostra(bool matriz[][22]){
 	}
 }
 
-int main(){
+void proximaGeracao(bool **matriz){
 
-//	bool matriz[80][22];
+	int vizinhosVivos;
 
-	ifstream infile("coordVida.txt");
-	string line;
+	bool **proxGeracao;
+	proxGeracao = new bool *[22];
+	for(int i = 0; i < 22; i++){
+		proxGeracao[i] = new bool[80];
+	}
 
-int a, b;
-while (infile >> a >> b)
-{
-    // process pair (a,b)
-	cout << a;
-	cout << b;
+	for(int i = 1; i < 21; i++){
+		for(int j = 1; j < 79; j++){
+			
+			vizinhosVivos = 0;
+
+			for(int k = (-1); k <= 1; k++){
+				for(int l = (-1); l <= 1; l++){
+
+					if(!((k == 0) && (l == 0)) && (matriz[i + k][j + l] == true)){
+						vizinhosVivos = vizinhosVivos + 1;
+					}
+
+				}
+			}
+
+			if((matriz[i][j] == true) && (vizinhosVivos < 2))
+				proxGeracao[i][j] = false;
+			else if((matriz[i][j] == true) && (vizinhosVivos > 3))
+				proxGeracao[i][j] = false;
+			else if((matriz[i][j] == false) && (vizinhosVivos == 3))
+				proxGeracao[i][j] = true;
+			else
+				proxGeracao[i][j] = matriz[i][j];
+			
+		}
+	}
+
+	for(int i = 0; i < 22; i++){
+		for(int j = 0; j < 80; j++){
+			
+			matriz[i][j] = proxGeracao[i][j];
+
+		}
+	}
+	mostra(matriz);
 	cout << "\n";
+	system("sleep 2s");
+	system("clear");
 }
 
-/*  	getline(infile, line);
-	cout << line;
-	getline(infile, line);
-	cout << line; */
 
+int main(){
 
-	infile.close();
- 
+	bool **matriz;
+	matriz = new bool *[22];
+	for(int i = 0; i < 22; i++){
+		matriz[i] = new bool[80];
+	}
+
+	geraMatriz(matriz);
+	mostra(matriz);
+	system("sleep 2s");
+	system("clear");
+	while(true){
+		proximaGeracao(matriz);
+	}
+
 	return 0;
 }
